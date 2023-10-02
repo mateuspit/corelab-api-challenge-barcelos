@@ -12,17 +12,9 @@ export default class ToDoListsController {
 
         if (taskExists) throw new AlreadyCreatedTaskException()
 
-        const createTask = await ToDoList.create(body)
+        await ToDoList.create(body)
 
-        response.created()
-
-        return {
-            message: 'Task created successfully!',
-            data: createTask,
-        }
-        //return {
-        //    message: 'Task created successfully!',
-        //}
+        response.created({ message: "Task created successfully!" })
     }
 
     public async index() {
