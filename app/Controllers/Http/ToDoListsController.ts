@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import ToDoList from 'App/Models/ToDoList'
 import { CreateTaskValidator, UpdateTaskValidator } from 'App/Validators/TaskValidator'
@@ -66,10 +65,10 @@ export default class ToDoListsController {
 
         if (titleExists) throw new AlreadyCreatedTaskException()
 
-        if (body.title !== undefined) taskExists.title = body.title;
-        if (body.text !== undefined) taskExists.text = body.text;
-        if (body.is_fav !== undefined) taskExists.is_fav = body.is_fav;
-        if (body.color !== undefined) taskExists.color = body.color;
+        if (body.title !== undefined) taskExists.title = body.title
+        if (body.text !== undefined) taskExists.text = body.text
+        if (body.is_fav !== undefined) taskExists.is_fav = body.is_fav
+        if (body.color !== undefined) taskExists.color = body.color
 
         await taskExists.save()
 
