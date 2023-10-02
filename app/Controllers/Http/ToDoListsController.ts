@@ -30,14 +30,13 @@ export default class ToDoListsController {
         const isFavString = params.id
 
         const isFavBoolean =
-            isFavString.toLowerCase(isFavString) === 'true' ||
-            isFavString.toLowerCase(isFavString) === 'false'
+            isFavString.toLowerCase() === 'true' || isFavString.toLowerCase() === 'false'
 
         if (!isFavBoolean || !color) throw new WrongFilterException()
 
         let query = ToDoList.query().where('color', color)
 
-        if (isFavBoolean) {
+        if (isFavString.toLowerCase() === 'true') {
             query = query.where('is_fav', true)
         }
 
