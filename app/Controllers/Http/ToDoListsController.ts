@@ -3,18 +3,8 @@ import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import ToDoList from 'App/Models/ToDoList'
 import CreateTaskValidator from 'App/Validators/CreateTaskValidator'
 
-//import { schema } from '@ioc:Adonis/Core/Validator'
-
 export default class ToDoListsController {
-    public async createTask({ request, response }: HttpContextContract) {
-        //const taskSchema = schema.create({
-        //    title: schema.string(),
-        //    text: schema.string(),
-        //    is_fav: schema.boolean(),
-        //    color: schema.string(),
-        //})
-
-        //const body = request.body()
+    public async store({ request, response }: HttpContextContract) {
         const body = await request.validate(CreateTaskValidator)
 
         const createTask = await ToDoList.create(body)
@@ -27,7 +17,7 @@ export default class ToDoListsController {
         }
     }
 
-    public async getAllTasks() {
+    public async index() {
         const allTasks = await ToDoList.all()
 
         return {
@@ -35,32 +25,31 @@ export default class ToDoListsController {
         }
     }
 
-    public async getFiltredTasks({ params, request }: HttpContextContract) {
-        const color = request.qs()
-        const isFav = params
-        //const isFav = params.favs === true
+    public async show({ params, request }: HttpContextContract) {
+        const { color } = request.qs()
+        const favs = params.id
         console.log(color)
-        console.log(isFav)
+        console.log(favs)
 
         //criar duas func
         //usar ternario
         //favs : comFav ? "semFav"
-        if (isFav.favs === 'true') {
+        if (favs === 'true') {
             const filtredTasks = await ToDoList.query()
-                .where('is_fav', isFav.favs)
-                .where('color', color.color)
+                .where('is_fav', favs)
+                .where('color', color)
             return {
                 data: filtredTasks,
             }
         } else {
-            const filtredTasks = await ToDoList.query().where('color', color.color)
+            const filtredTasks = await ToDoList.query().where('color', color)
             return {
                 data: filtredTasks,
             }
         }
     }
 
-    public async deleteTask({ params, response }: HttpContextContract) {
+    public async destroy({ params, response }: HttpContextContract) {
         const taskExists = await ToDoList.findByOrFail('id', params.id)
 
         await taskExists.delete()
@@ -68,7 +57,7 @@ export default class ToDoListsController {
         response.noContent()
     }
 
-    public async editTask({ request, params, response }: HttpContextContract) {
+    public async update({ request, params, response }: HttpContextContract) {
         const taskExists = await ToDoList.findByOrFail('id', params.id)
 
         //conferir se existe
