@@ -28,24 +28,15 @@ export default class ToDoListsController {
     public async show({ params, request }: HttpContextContract) {
         const { color } = request.qs()
         const favs = params.id
-        console.log(color)
-        console.log(favs)
+        let query = ToDoList.query().where('color', color)
 
-        //criar duas func
-        //usar ternario
-        //favs : comFav ? "semFav"
         if (favs === 'true') {
-            const filtredTasks = await ToDoList.query()
-                .where('is_fav', favs)
-                .where('color', color)
-            return {
-                data: filtredTasks,
-            }
-        } else {
-            const filtredTasks = await ToDoList.query().where('color', color)
-            return {
-                data: filtredTasks,
-            }
+            query = query.where('is_fav', true)
+        }
+
+        const filteredTasks = await query
+        return {
+            data: filteredTasks,
         }
     }
 
