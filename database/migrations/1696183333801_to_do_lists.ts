@@ -8,7 +8,7 @@ export default class extends BaseSchema {
             table.increments('id')
             table.string('title').notNullable()
             table.string('text').nullable()
-            table.boolean('isFav').defaultTo(false)
+            table.boolean('is_fav').defaultTo(false)
             table.string('color')
 
             /**

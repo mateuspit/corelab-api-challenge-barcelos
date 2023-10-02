@@ -12,7 +12,7 @@ export default class ToDoList extends BaseModel {
     public text: string
 
     @column()
-    public isFav: boolean
+    public is_fav: boolean
 
     @column()
     public color: string

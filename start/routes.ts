@@ -24,7 +24,15 @@ import HealthCheck from '@ioc:Adonis/Core/HealthCheck'
 Route.group(() => {
     Route.get('/health', async ({ response }) => {
         const report = await HealthCheck.getReport()
-
         return report.healthy ? response.ok(report) : response.badRequest(report)
     })
+
+    //Route.resource('/todolists', 'ToDoListsController').apiOnly()
+    Route.post('/todolists', 'ToDoListsController.createTask')
+    Route.get('/todolists', 'ToDoListsController.getAllTasks')
+    Route.get('/todolists/favs', 'ToDoListsController.getAllFavsTasks')
+    Route.get('/todolists/:favs', 'ToDoListsController.getFiltredTasks')
+    //repito so favs abaixo?
+    Route.delete('/todolists/:id', 'ToDoListsController.deleteTask')
+    Route.patch('/todolists/:id', 'ToDoListsController.editTask')
 }).prefix(`/api`)
