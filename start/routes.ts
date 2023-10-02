@@ -27,12 +27,12 @@ Route.group(() => {
         return report.healthy ? response.ok(report) : response.badRequest(report)
     })
 
-    //Route.resource('/todolists', 'ToDoListsController').apiOnly()
+    //Route.resource('/todolists', 'ToDoListsController').apiOnly() //usar o resource
     Route.post('/todolists', 'ToDoListsController.createTask')
     Route.get('/todolists', 'ToDoListsController.getAllTasks')
-    Route.get('/todolists/favs', 'ToDoListsController.getAllFavsTasks')
+    //Route.get('/todolists/favs', 'ToDoListsController.getAllFavsTasks') //tirar essa rota
     Route.get('/todolists/:favs', 'ToDoListsController.getFiltredTasks')
-    //repito so favs abaixo?
+    //repito so favs abaixo? n duplicar
     Route.delete('/todolists/:id', 'ToDoListsController.deleteTask')
     Route.patch('/todolists/:id', 'ToDoListsController.editTask')
 }).prefix(`/api`)

@@ -1,39 +1,37 @@
+/* eslint-disable prettier/prettier */
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import ToDoList from 'App/Models/ToDoList'
+import CreateTaskValidator from 'App/Validators/CreateTaskValidator'
+
+//import { schema } from '@ioc:Adonis/Core/Validator'
 
 export default class ToDoListsController {
     public async createTask({ request, response }: HttpContextContract) {
-        const body = request.body()
+        //const taskSchema = schema.create({
+        //    title: schema.string(),
+        //    text: schema.string(),
+        //    is_fav: schema.boolean(),
+        //    color: schema.string(),
+        //})
 
-        const task = await ToDoList.create(body)
+        //const body = request.body()
+        const body = await request.validate(CreateTaskValidator)
 
-        response.status(201)
+        const createTask = await ToDoList.create(body)
+
+        response.created()
 
         return {
-            message: 'To do list criada com sucesso',
-            data: task,
+            message: 'Task criada com sucesso',
+            data: createTask,
         }
     }
-    //public async store({ request, response }: HttpContextContract) {
-    //    return this.createTask({ request, response })
-    //}
 
     public async getAllTasks() {
         const allTasks = await ToDoList.all()
 
         return {
             data: allTasks,
-        }
-    }
-    //public async index({ request, response }: HttpContextContract) {
-    //    return this.getAllTasks({ request, response })
-    //}
-
-    public async getAllFavsTasks() {
-        const allFavsTasks = await ToDoList.query().where('is_fav', true)
-
-        return {
-            data: allFavsTasks,
         }
     }
 
@@ -44,6 +42,9 @@ export default class ToDoListsController {
         console.log(color)
         console.log(isFav)
 
+        //criar duas func
+        //usar ternario
+        //favs : comFav ? "semFav"
         if (isFav.favs === 'true') {
             const filtredTasks = await ToDoList.query()
                 .where('is_fav', isFav.favs)
@@ -64,7 +65,7 @@ export default class ToDoListsController {
 
         await taskExists.delete()
 
-        response.status(204)
+        response.noContent()
     }
 
     public async editTask({ request, params, response }: HttpContextContract) {
@@ -81,6 +82,6 @@ export default class ToDoListsController {
 
         await taskExists.save()
 
-        response.status(204)
+        response.noContent()
     }
 }
