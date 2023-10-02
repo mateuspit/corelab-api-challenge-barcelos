@@ -1,12 +1,13 @@
+/* eslint-disable prettier/prettier */
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import ToDoList from 'App/Models/ToDoList'
-import TaskValidator from 'App/Validators/TaskValidator'
+import { CreateTaskValidator, UpdateTaskValidator } from 'App/Validators/TaskValidator'
 import AlreadyCreatedTaskException from 'App/Exceptions/AlreadyCreatedTaskException'
 import WrongFilterException from 'App/Exceptions/WrongFilterException'
 
 export default class ToDoListsController {
     public async store({ request, response }: HttpContextContract) {
-        const body = await request.validate(TaskValidator)
+        const body = await request.validate(CreateTaskValidator)
 
         const taskExists = await ToDoList.findBy('title', body.title)
 
@@ -57,19 +58,21 @@ export default class ToDoListsController {
     }
 
     public async update({ request, params, response }: HttpContextContract) {
-        const taskExists = await ToDoList.findByOrFail('id', params.id)
+        const body = await request.validate(UpdateTaskValidator)
 
-        //conferir se existe
+        const taskExists = await ToDoList.findOrFail(params.id)
 
-        const body = request.body()
+        const titleExists = await ToDoList.findBy('title', body.title)
 
-        taskExists.title = body.title
-        taskExists.text = body.text
-        taskExists.is_fav = body.is_fav
-        taskExists.color = body.color
+        if (titleExists) throw new AlreadyCreatedTaskException()
+
+        if (body.title !== undefined) taskExists.title = body.title;
+        if (body.text !== undefined) taskExists.text = body.text;
+        if (body.is_fav !== undefined) taskExists.is_fav = body.is_fav;
+        if (body.color !== undefined) taskExists.color = body.color;
 
         await taskExists.save()
 
-        response.noContent()
+        response.ok()
     }
 }
