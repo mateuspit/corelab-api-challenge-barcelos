@@ -1,12 +1,12 @@
-/* eslint-disable prettier/prettier */
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import ToDoList from 'App/Models/ToDoList'
-import CreateTaskValidator from 'App/Validators/CreateTaskValidator'
+import TaskValidator from 'App/Validators/TaskValidator'
 import AlreadyCreatedTaskException from 'App/Exceptions/AlreadyCreatedTaskException'
+import WrongFilterException from 'App/Exceptions/WrongFilterException'
 
 export default class ToDoListsController {
     public async store({ request, response }: HttpContextContract) {
-        const body = await request.validate(CreateTaskValidator)
+        const body = await request.validate(TaskValidator)
 
         const taskExists = await ToDoList.findBy('title', body.title)
 
@@ -14,7 +14,7 @@ export default class ToDoListsController {
 
         await ToDoList.create(body)
 
-        response.created({ message: "Task created successfully!" })
+        response.created({ message: 'Task created successfully!' })
     }
 
     public async index() {
@@ -27,14 +27,22 @@ export default class ToDoListsController {
 
     public async show({ params, request }: HttpContextContract) {
         const { color } = request.qs()
-        const favs = params.id
+        const isFavString = params.id
+
+        const isFavBoolean =
+            isFavString.toLowerCase(isFavString) === 'true' ||
+            isFavString.toLowerCase(isFavString) === 'false'
+
+        if (!isFavBoolean || !color) throw new WrongFilterException()
+
         let query = ToDoList.query().where('color', color)
 
-        if (favs === 'true') {
+        if (isFavBoolean) {
             query = query.where('is_fav', true)
         }
 
         const filteredTasks = await query
+
         return {
             data: filteredTasks,
         }
