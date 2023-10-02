@@ -2,19 +2,27 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import ToDoList from 'App/Models/ToDoList'
 import CreateTaskValidator from 'App/Validators/CreateTaskValidator'
+import AlreadyCreatedTaskException from 'App/Exceptions/AlreadyCreatedTaskException'
 
 export default class ToDoListsController {
     public async store({ request, response }: HttpContextContract) {
         const body = await request.validate(CreateTaskValidator)
+
+        const taskExists = await ToDoList.findBy('title', body.title)
+
+        if (taskExists) throw new AlreadyCreatedTaskException()
 
         const createTask = await ToDoList.create(body)
 
         response.created()
 
         return {
-            message: 'Task criada com sucesso',
+            message: 'Task created successfully!',
             data: createTask,
         }
+        //return {
+        //    message: 'Task created successfully!',
+        //}
     }
 
     public async index() {
