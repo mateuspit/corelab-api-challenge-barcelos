@@ -6,7 +6,7 @@
  */
 
 import Env from '@ioc:Adonis/Core/Env'
-import { HashConfig } from '@ioc:Adonis/Core/Hash'
+import { hashConfig } from '@adonisjs/core/build/config'
 
 /*
 |--------------------------------------------------------------------------
@@ -17,59 +17,80 @@ import { HashConfig } from '@ioc:Adonis/Core/Hash'
 | defined inside `contracts` directory.
 |
 */
-const hashConfig: HashConfig = {
-  /*
-  |--------------------------------------------------------------------------
-  | Default hasher
-  |--------------------------------------------------------------------------
-  |
-  | By default we make use of the argon hasher to hash values. However, feel
-  | free to change the default value
-  |
-  */
-  default: Env.get('HASH_DRIVER', 'argon'),
-
-  list: {
+export default hashConfig({
     /*
     |--------------------------------------------------------------------------
-    | Argon
+    | Default hasher
     |--------------------------------------------------------------------------
     |
-    | Argon mapping uses the `argon2` driver to hash values.
-    |
-    | Make sure you install the underlying dependency for this driver to work.
-    | https://www.npmjs.com/package/phc-argon2.
-    |
-    | npm install phc-argon2
+    | By default we make use of the argon hasher to hash values. However, feel
+    | free to change the default value
     |
     */
-    argon: {
-      driver: 'argon2',
-      variant: 'id',
-      iterations: 3,
-      memory: 4096,
-      parallelism: 1,
-      saltSize: 16,
-    },
+    default: Env.get('HASH_DRIVER', 'scrypt'),
 
-    /*
-    |--------------------------------------------------------------------------
-    | Bcrypt
-    |--------------------------------------------------------------------------
-    |
-    | Bcrypt mapping uses the `bcrypt` driver to hash values.
-    |
-    | Make sure you install the underlying dependency for this driver to work.
-    | https://www.npmjs.com/package/phc-bcrypt.
-    |
-    | npm install phc-bcrypt
-    |
-    */
-    bcrypt: {
-      driver: 'bcrypt',
-      rounds: 10,
-    },
-  },
-}
+    list: {
+        /*
+        |--------------------------------------------------------------------------
+        | scrypt
+        |--------------------------------------------------------------------------
+        |
+        | Scrypt mapping uses the Node.js inbuilt crypto module for creating
+        | hashes.
+        |
+        | We are using the default configuration recommended within the Node.js
+        | documentation.
+        | https://nodejs.org/api/crypto.html#cryptoscryptpassword-salt-keylen-options-callback
+        |
+        */
+        scrypt: {
+            driver: 'scrypt',
+            cost: 16384,
+            blockSize: 8,
+            parallelization: 1,
+            saltSize: 16,
+            keyLength: 64,
+            maxMemory: 32 * 1024 * 1024,
+        },
 
-export default hashConfig
+        /*
+        |--------------------------------------------------------------------------
+        | Argon
+        |--------------------------------------------------------------------------
+        |
+        | Argon mapping uses the `argon2` driver to hash values.
+        |
+        | Make sure you install the underlying dependency for this driver to work.
+        | https://www.npmjs.com/package/phc-argon2.
+        |
+        | npm install phc-argon2
+        |
+        */
+        argon: {
+            driver: 'argon2',
+            variant: 'id',
+            iterations: 3,
+            memory: 4096,
+            parallelism: 1,
+            saltSize: 16,
+        },
+
+        /*
+        |--------------------------------------------------------------------------
+        | Bcrypt
+        |--------------------------------------------------------------------------
+        |
+        | Bcrypt mapping uses the `bcrypt` driver to hash values.
+        |
+        | Make sure you install the underlying dependency for this driver to work.
+        | https://www.npmjs.com/package/phc-bcrypt.
+        |
+        | npm install phc-bcrypt
+        |
+        */
+        bcrypt: {
+            driver: 'bcrypt',
+            rounds: 10,
+        },
+    },
+})
