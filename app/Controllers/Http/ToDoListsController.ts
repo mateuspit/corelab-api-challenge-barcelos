@@ -71,6 +71,6 @@ export default class ToDoListsController {
 
         await taskExists.save()
 
-        response.ok()
+        response.noContent()
     }
 }

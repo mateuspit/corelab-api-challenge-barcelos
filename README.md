@@ -1,21 +1,5 @@
 ## Corelab Challenge:
 
-You are tasked with building a web application that allows users to create and manage their to-do lists. The application should consist of a responsive webpage built in React, and an API built in Node.js to store and manage the to-do lists.
-
-
-### The repositories
-The [frontend repository](https://github.com/corelabbr/corelab-web-challenge)
-
-If you feel more comfortable, you can pick another React framework and show us your skills.
-
-The [backend repository](https://github.com/corelabbr/corelab-api-challenge)
-
-If you feel more comfortable, you can pick another Node JS framework and show us your skills.
-
-### The Layout
-Open the [layout mockup](https://www.figma.com/file/sQrUVHTlyogq3qGdkqGTXN/mockup?node-id=7%3A2&t=ANTOTiqjqGWYuoUr-0) in desktop and mobile version and follow this design as much as possible.
-
-
 ### The application should have the following functionality:
 
 1. Users should be able to create, read, update, and delete to-do items using the API.
